@@ -1,0 +1,2 @@
+// Transactions table component
+export {};

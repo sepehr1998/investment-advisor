@@ -1,0 +1,2 @@
+// Error boundary component
+export {};

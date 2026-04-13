@@ -1,0 +1,6 @@
+query GetActiveContacts {
+  contactsByParameters(parameters: { status: "A" }) {
+    id
+    name
+  }
+}

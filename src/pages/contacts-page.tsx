@@ -1,0 +1,2 @@
+// Contacts page
+export {};

@@ -1,0 +1,2 @@
+// Portfolios list component
+export {};

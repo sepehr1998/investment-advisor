@@ -1,0 +1,2 @@
+// Portfolio card component
+export {};

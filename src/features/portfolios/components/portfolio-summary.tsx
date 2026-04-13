@@ -1,0 +1,2 @@
+// Portfolio summary component
+export {};

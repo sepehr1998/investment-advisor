@@ -1,0 +1,11 @@
+query GetPortfoliosByContact($contactId: Long!) {
+  portfoliosByParameters(parameters: { contactId: $contactId }) {
+    id
+    name
+    currency {
+      securityCode
+    }
+    status
+    startDate
+  }
+}

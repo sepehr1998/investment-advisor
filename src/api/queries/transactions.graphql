@@ -1,0 +1,20 @@
+query GetTransactionsByPortfolio($portfolioId: Long!) {
+  transactionsByParameters(parameters: { portfolioId: $portfolioId }) {
+    id
+    type {
+      typeCode
+      typeName
+    }
+    security {
+      name
+      securityCode
+    }
+    tradeDate
+    amount
+    quantity
+    price
+    currency {
+      securityCode
+    }
+  }
+}

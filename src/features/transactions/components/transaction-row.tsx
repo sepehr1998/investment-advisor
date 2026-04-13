@@ -1,0 +1,2 @@
+// Transaction row component
+export {};

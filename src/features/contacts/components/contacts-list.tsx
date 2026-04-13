@@ -1,0 +1,2 @@
+// Contacts list component
+export {};

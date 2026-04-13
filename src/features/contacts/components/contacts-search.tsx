@@ -1,0 +1,2 @@
+// Contacts search component
+export {};

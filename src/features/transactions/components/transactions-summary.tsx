@@ -1,0 +1,2 @@
+// Transactions summary component
+export {};
