@@ -1,2 +1,1 @@
-// Contact types
-export {};
+export type { Contact } from '../../api/generated';
