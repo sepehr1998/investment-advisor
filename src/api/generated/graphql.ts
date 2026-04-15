@@ -28,7 +28,11 @@ export interface Portfolio {
 }
 
 export interface GetPortfoliosByContactQuery {
-  portfoliosByParameters: Portfolio[];
+  contact: {
+    id: Long;
+    name: string | null;
+    portfolios: Portfolio[];
+  };
 }
 
 export interface GetPortfoliosByContactQueryVariables {

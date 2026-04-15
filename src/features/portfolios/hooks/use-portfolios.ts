@@ -14,7 +14,7 @@ export function usePortfolios(contactId: string | null | undefined) {
         GetPortfoliosByContactQuery,
         GetPortfoliosByContactQueryVariables
       >(GET_PORTFOLIOS_BY_CONTACT, { contactId: contactId! });
-      return data.portfoliosByParameters;
+      return data.contact;
     },
     enabled: !!contactId,
   });

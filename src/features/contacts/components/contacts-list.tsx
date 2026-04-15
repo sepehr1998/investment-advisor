@@ -6,15 +6,12 @@ interface ContactsListProps {
 }
 
 export function ContactsList({ contacts }: ContactsListProps) {
-  // Sort contacts alphabetically by name (A to Z)
-  const sortedContacts = [...contacts].sort((a, b) => {
-    const nameA = a.name ?? '';
-    const nameB = b.name ?? '';
-    return nameA.localeCompare(nameB);
-  });
+  const sortedContacts = [...contacts].sort((a, b) =>
+    (a.name ?? '').localeCompare(b.name ?? '')
+  );
 
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {sortedContacts.map((contact) => (
         <ContactCard key={contact.id} contact={contact} />
       ))}

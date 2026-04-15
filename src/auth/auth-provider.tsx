@@ -1,15 +1,7 @@
-import { createContext, useEffect, useState, useCallback, useRef, type ReactNode } from 'react';
-import type Keycloak from 'keycloak-js';
+import { useEffect, useState, useCallback, useRef, type ReactNode } from 'react';
 import keycloak from './keycloak';
+import { AuthContext } from './auth-context';
 import { AUTH_LOADING_MESSAGE } from '../lib/constants';
-
-interface AuthContextValue {
-  keycloak: Keycloak;
-  isAuthenticated: boolean;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
 
 interface AuthProviderProps {
   children: ReactNode;

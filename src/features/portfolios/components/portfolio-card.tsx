@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { Briefcase } from 'lucide-react';
 import type { Portfolio } from '../types';
 import { formatDate } from '../../../lib/formatters';
 
@@ -14,42 +15,38 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
   }>();
   const isSelected = portfolioId === portfolio.id;
 
-  const handleClick = () => {
-    navigate(`/contacts/${contactId}/portfolios/${portfolio.id}`);
-  };
-
   return (
-    <button
-      onClick={handleClick}
-      className={`flex w-full items-center justify-between rounded-lg border bg-white p-4 text-left transition-colors hover:bg-gray-50 ${
-        isSelected
-          ? 'border-blue-500 ring-1 ring-blue-500'
-          : 'border-gray-200 hover:border-gray-300'
+    <div
+      onClick={() => navigate(`/contacts/${contactId}/portfolios/${portfolio.id}`)}
+      className={`cursor-pointer rounded-xl border bg-white p-5 shadow-sm transition-shadow hover:shadow-md ${
+        isSelected ? 'border-blue-500 ring-1 ring-blue-500' : 'border-slate-200'
       }`}
     >
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-base font-medium text-gray-900">
-          {portfolio.name ?? 'Unnamed Portfolio'}
-        </p>
-        <p className="mt-1 text-sm text-gray-500">ID: {portfolio.id}</p>
-        <div className="mt-1 flex gap-3 text-sm text-gray-500">
-          {portfolio.currency?.securityCode && (
-            <span>{portfolio.currency.securityCode}</span>
-          )}
-          {portfolio.startDate && (
-            <span>{formatDate(portfolio.startDate)}</span>
-          )}
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+          <Briefcase className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium text-slate-900">
+            {portfolio.name ?? 'Unnamed Portfolio'}
+          </p>
+          <p className="mt-0.5 text-sm text-slate-500">ID: {portfolio.id}</p>
+          <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+            <div>
+              <p className="text-xs text-slate-400">Currency</p>
+              <p className="text-sm text-slate-700">
+                {portfolio.currency?.securityCode ?? '—'}
+              </p>
+            </div>
+            {portfolio.startDate && (
+              <div className="text-right">
+                <p className="text-xs text-slate-400">Start Date</p>
+                <p className="text-sm text-slate-700">{formatDate(portfolio.startDate)}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <svg
-        className="ml-4 h-5 w-5 flex-shrink-0 text-gray-400"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
-    </button>
+    </div>
   );
 }

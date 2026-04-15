@@ -1,29 +1,8 @@
-import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
-import { ProtectedRoute } from '../auth/protected-route';
-import { AppShell } from '../components/layout/app-shell';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { RootLayout } from '../components/layout/root-layout';
 import { ContactsPage } from '../pages/contacts-page';
 import { PortfoliosPage } from '../pages/portfolios-page';
-
-function TransactionsPage() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-medium text-gray-900">Transactions</h2>
-      <p className="mt-2 text-sm text-gray-600">
-        Transactions page
-      </p>
-    </div>
-  );
-}
-
-function RootLayout() {
-  return (
-    <ProtectedRoute>
-      <AppShell>
-        <Outlet />
-      </AppShell>
-    </ProtectedRoute>
-  );
-}
+import { TransactionsPage } from '../pages/transactions-page';
 
 export const router = createBrowserRouter([
   {

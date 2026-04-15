@@ -12,14 +12,18 @@ export const GET_ACTIVE_CONTACTS = gql`
 
 export const GET_PORTFOLIOS_BY_CONTACT = gql`
   query GetPortfoliosByContact($contactId: Long!) {
-    portfoliosByParameters(parameters: { contactId: $contactId, status: "A" }) {
+    contact(id: $contactId) {
       id
       name
-      currency {
-        securityCode
+      portfolios {
+        id
+        name
+        currency {
+          securityCode
+        }
+        status
+        startDate
       }
-      status
-      startDate
     }
   }
 `;

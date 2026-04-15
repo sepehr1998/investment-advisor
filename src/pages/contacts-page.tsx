@@ -14,11 +14,10 @@ import {
 export function ContactsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { data: contacts, isLoading, isFetching, isError, refetch } = useContacts();
-  console.log(useContacts());
+
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
     if (!searchQuery.trim()) return contacts;
-
     const query = searchQuery.toLowerCase();
     return contacts.filter((contact) =>
       contact.name?.toLowerCase().includes(query)
@@ -26,14 +25,25 @@ export function ContactsPage() {
   }, [contacts, searchQuery]);
 
   return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900">{CONTACTS_TITLE}</h2>
+    <div className="min-h-screen bg-slate-50 p-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-slate-900">{CONTACTS_TITLE}</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Select a contact to view their portfolios
+          </p>
+        </div>
 
-      <div className="mt-4">
-        <ContactsSearch value={searchQuery} onChange={setSearchQuery} />
-      </div>
+        <div className="mb-4">
+          <ContactsSearch value={searchQuery} onChange={setSearchQuery} />
+        </div>
 
-      <div className="mt-4">
+        {!isLoading && !isFetching && contacts && (
+          <p className="mb-4 text-sm text-slate-500">
+            Showing {filteredContacts.length} of {contacts.length} contacts
+          </p>
+        )}
+
         {isLoading || isFetching ? (
           <ContactsSkeleton />
         ) : isError ? (

@@ -6,14 +6,12 @@ interface PortfoliosListProps {
 }
 
 export function PortfoliosList({ portfolios }: PortfoliosListProps) {
-  const sortedPortfolios = [...portfolios].sort((a, b) => {
-    const nameA = a.name ?? '';
-    const nameB = b.name ?? '';
-    return nameA.localeCompare(nameB);
-  });
+  const sortedPortfolios = [...portfolios].sort((a, b) =>
+    (a.name ?? '').localeCompare(b.name ?? '')
+  );
 
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {sortedPortfolios.map((portfolio) => (
         <PortfolioCard key={portfolio.id} portfolio={portfolio} />
       ))}
