@@ -13,7 +13,7 @@ export function PortfolioCard({ portfolio }: PortfolioCardProps) {
     contactId: string;
     portfolioId?: string;
   }>();
-  const isSelected = portfolioId === portfolio.id;
+  const isSelected = portfolioId === String(portfolio.id);
 
   return (
     <div

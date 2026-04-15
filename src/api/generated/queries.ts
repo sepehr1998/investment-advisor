@@ -29,24 +29,25 @@ export const GET_PORTFOLIOS_BY_CONTACT = gql`
 `;
 
 export const GET_TRANSACTIONS_BY_PORTFOLIO = gql`
-  query GetTransactionsByPortfolio($portfolioId: Long!) {
-    transactions(portfolioId: $portfolioId) {
+  query GetTransactionsByPortfolio($parameters: transactionParametersInput) {
+    transactionsByParameters(parameters: $parameters) {
       id
-      type {
-        typeCode
-        typeName
-      }
+      transactionDate
+      effectiveTransactionDate
+      settlementDate
+      typeCode
+      reference
+      status
       security {
+        id
         name
         securityCode
+        isinCode
       }
-      tradeDate
-      amount
-      quantity
-      price
       currency {
         securityCode
       }
+      price
     }
   }
 `;

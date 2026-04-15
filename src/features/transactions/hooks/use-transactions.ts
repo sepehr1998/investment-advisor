@@ -13,8 +13,8 @@ export function useTransactions(portfolioId: string | null | undefined) {
       const data = await client.request<
         GetTransactionsByPortfolioQuery,
         GetTransactionsByPortfolioQueryVariables
-      >(GET_TRANSACTIONS_BY_PORTFOLIO, { portfolioId: portfolioId! });
-      return data.transactions;
+      >(GET_TRANSACTIONS_BY_PORTFOLIO, { parameters: { portfolioId: Number(portfolioId) } });
+      return data.transactionsByParameters;
     },
     enabled: !!portfolioId,
   });

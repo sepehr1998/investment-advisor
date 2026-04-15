@@ -2,7 +2,7 @@
 // Note: These types are manually defined since the schema requires authentication
 
 // Scalar types
-export type Long = string;
+export type Long = number;
 
 // Contact types
 export interface Contact {
@@ -15,14 +15,14 @@ export interface GetActiveContactsQuery {
 }
 
 // Portfolio types
-export interface Currency {
+export interface PortfolioCurrency {
   securityCode: string | null;
 }
 
 export interface Portfolio {
   id: Long;
   name: string | null;
-  currency: Currency | null;
+  currency: PortfolioCurrency | null;
   status: string | null;
   startDate: string | null;
 }
@@ -40,31 +40,34 @@ export interface GetPortfoliosByContactQueryVariables {
 }
 
 // Transaction types
-export interface TransactionType {
-  typeCode: string | null;
-  typeName: string | null;
+export interface TransactionSecurity {
+  id: Long;
+  name: string | null;
+  securityCode: string | null;
+  isinCode: string | null;
 }
 
-export interface Security {
-  name: string | null;
+export interface TransactionCurrency {
   securityCode: string | null;
 }
 
 export interface Transaction {
   id: Long;
-  type: TransactionType | null;
-  security: Security | null;
-  tradeDate: string | null;
-  amount: number | null;
-  quantity: number | null;
+  transactionDate: string | null;
+  effectiveTransactionDate: string | null;
+  settlementDate: string | null;
+  typeCode: string | null;
+  reference: string | null;
+  status: string | null;
+  security: TransactionSecurity | null;
+  currency: TransactionCurrency | null;
   price: number | null;
-  currency: Currency | null;
 }
 
 export interface GetTransactionsByPortfolioQuery {
-  transactions: Transaction[];
+  transactionsByParameters: Transaction[];
 }
 
 export interface GetTransactionsByPortfolioQueryVariables {
-  portfolioId: Long;
+  parameters: { portfolioId: number };
 }

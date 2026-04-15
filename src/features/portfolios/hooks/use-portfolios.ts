@@ -13,7 +13,7 @@ export function usePortfolios(contactId: string | null | undefined) {
       const data = await client.request<
         GetPortfoliosByContactQuery,
         GetPortfoliosByContactQueryVariables
-      >(GET_PORTFOLIOS_BY_CONTACT, { contactId: contactId! });
+      >(GET_PORTFOLIOS_BY_CONTACT, { contactId: Number(contactId) });
       return data.contact;
     },
     enabled: !!contactId,

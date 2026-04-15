@@ -12,14 +12,14 @@ export function Breadcrumb() {
 
   // Contact name comes from the portfolios cache (contact query includes name)
   const contactData = queryClient.getQueryData<{
-    id: string;
+    id: number;
     name: string | null;
     portfolios: Portfolio[];
   }>(['portfolios', contactId]);
   const contactName = contactData?.name ?? `Contact ${contactId}`;
 
   // Portfolio name from the nested portfolios array in that same cache entry
-  const portfolio = contactData?.portfolios?.find((p) => p.id === portfolioId);
+  const portfolio = contactData?.portfolios?.find((p) => String(p.id) === portfolioId);
   const portfolioName = portfolio?.name ?? `Portfolio ${portfolioId}`;
 
   return (
