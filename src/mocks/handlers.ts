@@ -59,7 +59,7 @@ export const mockTransactions: Transaction[] = [
 ];
 
 export const handlers = [
-  http.post('https://tryme.fasolutions.com/api/graphql', async ({ request }) => {
+  http.post('/api/graphql', async ({ request }) => {
     const body = await request.json() as { query: string; variables?: Record<string, unknown> };
     const { query } = body;
 
@@ -67,7 +67,7 @@ export const handlers = [
     if (query.includes('GetActiveContacts')) {
       return HttpResponse.json({
         data: {
-          contactsByParameters: mockContacts,
+          contacts: mockContacts,
         },
       });
     }
@@ -76,7 +76,7 @@ export const handlers = [
     if (query.includes('GetPortfoliosByContact')) {
       return HttpResponse.json({
         data: {
-          portfoliosByParameters: mockPortfolios,
+          portfolios: mockPortfolios,
         },
       });
     }
@@ -85,7 +85,7 @@ export const handlers = [
     if (query.includes('GetTransactionsByPortfolio')) {
       return HttpResponse.json({
         data: {
-          transactionsByParameters: mockTransactions,
+          transactions: mockTransactions,
         },
       });
     }

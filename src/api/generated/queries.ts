@@ -3,7 +3,7 @@ import { gql } from 'graphql-request';
 
 export const GET_ACTIVE_CONTACTS = gql`
   query GetActiveContacts {
-    contactsByParameters(parameters: { status: "A" }) {
+    contacts(status: "A") {
       id
       name
     }
@@ -12,7 +12,7 @@ export const GET_ACTIVE_CONTACTS = gql`
 
 export const GET_PORTFOLIOS_BY_CONTACT = gql`
   query GetPortfoliosByContact($contactId: Long!) {
-    portfoliosByParameters(parameters: { contactId: $contactId }) {
+    portfoliosByParameters(parameters: { contactId: $contactId, status: "A" }) {
       id
       name
       currency {
@@ -26,7 +26,7 @@ export const GET_PORTFOLIOS_BY_CONTACT = gql`
 
 export const GET_TRANSACTIONS_BY_PORTFOLIO = gql`
   query GetTransactionsByPortfolio($portfolioId: Long!) {
-    transactionsByParameters(parameters: { portfolioId: $portfolioId }) {
+    transactions(portfolioId: $portfolioId) {
       id
       type {
         typeCode

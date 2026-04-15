@@ -1,5 +1,5 @@
 query GetTransactionsByPortfolio($portfolioId: Long!) {
-  transactionsByParameters(parameters: { portfolioId: $portfolioId }) {
+  transactions(portfolioId: $portfolioId) {
     id
     type {
       typeCode

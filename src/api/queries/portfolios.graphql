@@ -1,5 +1,5 @@
 query GetPortfoliosByContact($contactId: Long!) {
-  portfoliosByParameters(parameters: { contactId: $contactId }) {
+  portfoliosByParameters(parameters: { contactId: $contactId, status: "A" }) {
     id
     name
     currency {

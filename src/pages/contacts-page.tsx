@@ -13,8 +13,8 @@ import {
 
 export function ContactsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: contacts, isLoading, isError, refetch } = useContacts();
-
+  const { data: contacts, isLoading, isFetching, isError, refetch } = useContacts();
+  console.log(useContacts());
   const filteredContacts = useMemo(() => {
     if (!contacts) return [];
     if (!searchQuery.trim()) return contacts;
@@ -34,7 +34,7 @@ export function ContactsPage() {
       </div>
 
       <div className="mt-4">
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <ContactsSkeleton />
         ) : isError ? (
           <ErrorState message={CONTACTS_ERROR_MESSAGE} onRetry={refetch} />

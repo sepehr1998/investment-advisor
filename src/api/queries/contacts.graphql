@@ -1,5 +1,5 @@
 query GetActiveContacts {
-  contactsByParameters(parameters: { status: "A" }) {
+  contacts(status: "A") {
     id
     name
   }

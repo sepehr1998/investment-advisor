@@ -8,5 +8,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    env: {
+      VITE_GRAPHQL_URL: 'https://tryme.fasolutions.com/api/graphql',
+    },
   },
 });

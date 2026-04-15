@@ -7,10 +7,12 @@ import {
 
 export function useContacts() {
   return useQuery({
-    queryKey: ['contacts', { status: 'A' }],
+    queryKey: ['contacts', { status: "A" }],
     queryFn: async () => {
+      console.log('called')
       const data = await client.request<GetActiveContactsQuery>(GET_ACTIVE_CONTACTS);
-      return data.contactsByParameters;
+      console.log(data);
+      return data.contacts;
     },
   });
 }

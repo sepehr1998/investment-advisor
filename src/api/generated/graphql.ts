@@ -11,7 +11,7 @@ export interface Contact {
 }
 
 export interface GetActiveContactsQuery {
-  contactsByParameters: Contact[];
+  contacts: Contact[];
 }
 
 // Portfolio types
@@ -58,7 +58,7 @@ export interface Transaction {
 }
 
 export interface GetTransactionsByPortfolioQuery {
-  transactionsByParameters: Transaction[];
+  transactions: Transaction[];
 }
 
 export interface GetTransactionsByPortfolioQueryVariables {

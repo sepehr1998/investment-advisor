@@ -1,2 +1,1 @@
-// Portfolio types
-export {};
+export type { Portfolio } from '../../api/generated';
