@@ -82,6 +82,12 @@ export function TransactionsPage() {
               />
             </div>
 
+            {!isLoading && !isError && transactions && transactions.length > 0 && (
+              <p className="mb-4 text-sm text-slate-500">
+                {transactions.length} transaction{transactions.length !== 1 ? 's' : ''} found
+              </p>
+            )}
+
             {isLoading ? (
               <TransactionsSkeleton />
             ) : isError ? (
