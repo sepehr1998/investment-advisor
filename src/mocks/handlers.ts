@@ -1,23 +1,24 @@
 import { http, HttpResponse } from 'msw';
 import type { Contact, Portfolio, Transaction } from '../api/generated';
 
-// Mock data
+const GRAPHQL_URL = 'https://tryme.fasolutions.com/api/graphql';
+
 export const mockContacts: Contact[] = [
-  { id: '1', name: 'Alice Johnson' },
-  { id: '2', name: 'Bob Smith' },
-  { id: '3', name: 'Charlie Brown' },
+  { id: 1, name: 'Alice Johnson' },
+  { id: 2, name: 'Bob Smith' },
+  { id: 3, name: 'Charlie Brown' },
 ];
 
 export const mockPortfolios: Portfolio[] = [
   {
-    id: '101',
+    id: 101,
     name: 'Growth Portfolio',
     currency: { securityCode: 'EUR' },
     status: 'A',
     startDate: '2020-01-15',
   },
   {
-    id: '102',
+    id: 102,
     name: 'Income Portfolio',
     currency: { securityCode: 'USD' },
     status: 'A',
@@ -27,69 +28,74 @@ export const mockPortfolios: Portfolio[] = [
 
 export const mockTransactions: Transaction[] = [
   {
-    id: '1001',
-    type: { typeCode: 'BUY', typeName: 'Buy' },
-    security: { name: 'Apple Inc.', securityCode: 'AAPL' },
-    tradeDate: '2024-01-15',
-    amount: -15000,
-    quantity: 100,
-    price: 150,
+    id: 1001,
+    transactionDate: '2024-01-15',
+    effectiveTransactionDate: '2024-01-17',
+    settlementDate: '2024-01-17',
+    typeCode: 'BUY',
+    reference: 'TXN001',
+    status: 'SETTLED',
+    security: { id: 1, name: 'Apple Inc.', securityCode: 'AAPL', isinCode: 'US0378331005' },
     currency: { securityCode: 'USD' },
+    price: 150.25,
   },
   {
-    id: '1002',
-    type: { typeCode: 'SELL', typeName: 'Sell' },
-    security: { name: 'Microsoft Corp', securityCode: 'MSFT' },
-    tradeDate: '2024-01-10',
-    amount: 20000,
-    quantity: 50,
-    price: 400,
+    id: 1002,
+    transactionDate: '2024-01-10',
+    effectiveTransactionDate: '2024-01-12',
+    settlementDate: '2024-01-12',
+    typeCode: 'SELL',
+    reference: 'TXN002',
+    status: 'SETTLED',
+    security: { id: 2, name: 'Microsoft Corp', securityCode: 'MSFT', isinCode: 'US5949181045' },
     currency: { securityCode: 'USD' },
+    price: 400.5,
   },
   {
-    id: '1003',
-    type: { typeCode: 'DIVIDEND', typeName: 'Dividend' },
-    security: { name: 'Johnson & Johnson', securityCode: 'JNJ' },
-    tradeDate: '2024-01-05',
-    amount: 500,
-    quantity: null,
+    id: 1003,
+    transactionDate: '2024-01-05',
+    effectiveTransactionDate: '2024-01-05',
+    settlementDate: '2024-01-05',
+    typeCode: 'DIVIDEND',
+    reference: 'TXN003',
+    status: 'SETTLED',
+    security: { id: 3, name: 'Johnson & Johnson', securityCode: 'JNJ', isinCode: 'US4781601046' },
+    currency: { securityCode: 'USD' },
     price: null,
-    currency: { securityCode: 'USD' },
   },
 ];
 
 export const handlers = [
-  http.post('/api/graphql', async ({ request }) => {
-    const body = await request.json() as { query: string; variables?: Record<string, unknown> };
+  http.post(GRAPHQL_URL, async ({ request }) => {
+    const body = (await request.json()) as {
+      query: string;
+      variables?: Record<string, unknown>;
+    };
     const { query } = body;
 
-    // Handle GetActiveContacts query
-    if (query.includes('GetActiveContacts')) {
+    if (query.includes('contactsByParameters')) {
       return HttpResponse.json({
-        data: {
-          contacts: mockContacts,
-        },
+        data: { contactsByParameters: mockContacts },
       });
     }
 
-    // Handle GetPortfoliosByContact query
     if (query.includes('GetPortfoliosByContact')) {
       return HttpResponse.json({
         data: {
-          portfolios: mockPortfolios,
+          contact: { id: 1, name: 'Alice Johnson', portfolios: mockPortfolios },
         },
       });
     }
 
-    // Handle GetTransactionsByPortfolio query
-    if (query.includes('GetTransactionsByPortfolio')) {
+    if (query.includes('transactionsByParameters')) {
       return HttpResponse.json({
-        data: {
-          transactions: mockTransactions,
-        },
+        data: { transactionsByParameters: mockTransactions },
       });
     }
 
-    return HttpResponse.json({ errors: [{ message: 'Unknown query' }] }, { status: 400 });
+    return HttpResponse.json(
+      { errors: [{ message: 'Unknown query' }] },
+      { status: 400 }
+    );
   }),
 ];
