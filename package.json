@@ -16,6 +16,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-virtual": "^3.13.23",
     "graphql": "^16.13.2",
     "graphql-request": "^7.4.0",
     "keycloak-js": "^26.2.3",
