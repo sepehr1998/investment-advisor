@@ -1,11 +1,9 @@
 import { RotateCcw, Search } from 'lucide-react';
-import type { ContactFiltersState } from './contacts-active-filters';
+import type { PortfolioFiltersState } from './portfolios-active-filters';
 
-export { EMPTY_FILTERS, filtersToParameters } from './contacts-active-filters';
-
-interface ContactsFiltersProps {
-  filters: ContactFiltersState;
-  onChange: (filters: ContactFiltersState) => void;
+interface PortfoliosFiltersProps {
+  filters: PortfolioFiltersState;
+  onChange: (filters: PortfolioFiltersState) => void;
   onApply: () => void;
   onClear: () => void;
 }
@@ -27,8 +25,8 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-export function ContactsFilters({ filters, onChange, onApply, onClear }: ContactsFiltersProps) {
-  function set(field: keyof ContactFiltersState, value: string) {
+export function PortfoliosFilters({ filters, onChange, onApply, onClear }: PortfoliosFiltersProps) {
+  function set(field: keyof PortfolioFiltersState, value: string) {
     onChange({ ...filters, [field]: value });
   }
 
@@ -47,22 +45,22 @@ export function ContactsFilters({ filters, onChange, onApply, onClear }: Contact
 
       {/* Scrollable fields */}
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4" onKeyDown={handleKeyDown}>
-        <FilterField label="Contact name">
+        <FilterField label="Portfolio IDs (comma-separated)">
           <input
             type="text"
-            value={filters.name}
-            onChange={(e) => set('name', e.target.value)}
-            placeholder="e.g. John Doe"
+            value={filters.ids}
+            onChange={(e) => set('ids', e.target.value)}
+            placeholder="e.g. 101, 205, 310"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Contact ID">
+        <FilterField label="Portfolio name">
           <input
-            type="number"
-            value={filters.contactId}
-            onChange={(e) => set('contactId', e.target.value)}
-            placeholder="e.g. 12345"
+            type="text"
+            value={filters.name}
+            onChange={(e) => set('name', e.target.value)}
+            placeholder="e.g. Growth Fund"
             className={inputClass}
           />
         </FilterField>
@@ -89,42 +87,42 @@ export function ContactsFilters({ filters, onChange, onApply, onClear }: Contact
           </select>
         </FilterField>
 
-        <FilterField label="Contact address">
+        <FilterField label="Type">
           <input
             type="text"
-            value={filters.address}
-            onChange={(e) => set('address', e.target.value)}
-            placeholder="Address"
+            value={filters.typeCode}
+            onChange={(e) => set('typeCode', e.target.value)}
+            placeholder="Portfolio type code"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="City">
+        <FilterField label="Currency">
           <input
             type="text"
-            value={filters.city}
-            onChange={(e) => set('city', e.target.value)}
-            placeholder="City"
+            value={filters.currencyCode}
+            onChange={(e) => set('currencyCode', e.target.value)}
+            placeholder="e.g. EUR, USD, SEK"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Postal code">
+        <FilterField label="Rule set">
           <input
             type="text"
-            value={filters.postcode}
-            onChange={(e) => set('postcode', e.target.value)}
-            placeholder="Postal / ZIP"
+            value={filters.ruleSetCode}
+            onChange={(e) => set('ruleSetCode', e.target.value)}
+            placeholder="Posting rule set code"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Nationality code">
+        <FilterField label="Model portfolio">
           <input
             type="text"
-            value={filters.nationalityCode}
-            onChange={(e) => set('nationalityCode', e.target.value)}
-            placeholder="e.g. FI, SE, US"
+            value={filters.modelPortfolioShortName}
+            onChange={(e) => set('modelPortfolioShortName', e.target.value)}
+            placeholder="Model portfolio short name"
             className={inputClass}
           />
         </FilterField>
@@ -139,92 +137,52 @@ export function ContactsFilters({ filters, onChange, onApply, onClear }: Contact
           />
         </FilterField>
 
-        <FilterField label="Contact type code">
-          <input
-            type="text"
-            value={filters.contactTypeCode}
-            onChange={(e) => set('contactTypeCode', e.target.value)}
-            placeholder="Contact type"
-            className={inputClass}
-          />
-        </FilterField>
-
-        <FilterField label="Contact subtype code">
-          <input
-            type="text"
-            value={filters.contactSubTypeCode}
-            onChange={(e) => set('contactSubTypeCode', e.target.value)}
-            placeholder="Contact subtype"
-            className={inputClass}
-          />
-        </FilterField>
-
-        <FilterField label="Identity code">
-          <input
-            type="text"
-            value={filters.identityCode}
-            onChange={(e) => set('identityCode', e.target.value)}
-            placeholder="Identity code"
-            className={inputClass}
-          />
-        </FilterField>
-
-        <FilterField label="Juridical code">
+        <FilterField label="Juridical">
           <input
             type="text"
             value={filters.juridicalCode}
             onChange={(e) => set('juridicalCode', e.target.value)}
-            placeholder="Juridical / customer type"
+            placeholder="Juridical code"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Classification">
+        <FilterField label="Tax country">
           <input
             type="text"
-            value={filters.classificationCode}
-            onChange={(e) => set('classificationCode', e.target.value)}
-            placeholder="Classification code"
+            value={filters.countryCode}
+            onChange={(e) => set('countryCode', e.target.value)}
+            placeholder="e.g. FI, SE, US"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Classification 2">
+        <FilterField label="Valuation method">
           <input
             type="text"
-            value={filters.classificationCode2}
-            onChange={(e) => set('classificationCode2', e.target.value)}
-            placeholder="Classification code 2"
+            value={filters.valuationMethod}
+            onChange={(e) => set('valuationMethod', e.target.value)}
+            placeholder="Valuation method"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Classification 3">
+        <FilterField label="Custody">
           <input
             type="text"
-            value={filters.classificationCode3}
-            onChange={(e) => set('classificationCode3', e.target.value)}
-            placeholder="Classification code 3"
+            value={filters.custodyCode}
+            onChange={(e) => set('custodyCode', e.target.value)}
+            placeholder="Custody code"
             className={inputClass}
           />
         </FilterField>
 
-        <FilterField label="Portfolio IDs (comma-separated)">
+        <FilterField label="Book entry">
           <input
             type="text"
-            value={filters.portfolioIds}
-            onChange={(e) => set('portfolioIds', e.target.value)}
-            placeholder="e.g. 101, 205, 310"
-            className={inputClass}
-          />
-        </FilterField>
-
-        <FilterField label="Tags (comma-separated)">
-          <input
-            type="text"
-            value={filters.tags}
-            onChange={(e) => set('tags', e.target.value)}
-            placeholder="e.g. vip, prospect"
+            value={filters.bookEntry}
+            onChange={(e) => set('bookEntry', e.target.value)}
+            placeholder="Book entry"
             className={inputClass}
           />
         </FilterField>
@@ -234,6 +192,25 @@ export function ContactsFilters({ filters, onChange, onApply, onClear }: Contact
             type="date"
             value={filters.lastModifiedStartDate}
             onChange={(e) => set('lastModifiedStartDate', e.target.value)}
+            className={inputClass}
+          />
+        </FilterField>
+
+        <FilterField label="Modified to">
+          <input
+            type="date"
+            value={filters.lastModifiedEndDate}
+            onChange={(e) => set('lastModifiedEndDate', e.target.value)}
+            className={inputClass}
+          />
+        </FilterField>
+
+        <FilterField label="Tags (comma-separated)">
+          <input
+            type="text"
+            value={filters.tags}
+            onChange={(e) => set('tags', e.target.value)}
+            placeholder="e.g. vip, growth"
             className={inputClass}
           />
         </FilterField>

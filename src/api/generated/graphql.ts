@@ -71,6 +71,30 @@ export interface GetPortfoliosByContactQueryVariables {
   contactId: Long;
 }
 
+export interface PortfolioParametersInput {
+  ids?: string[];
+  name?: string;
+  extId?: string;
+  status?: string;
+  typeCode?: string;
+  currencyCode?: string;
+  ruleSetCode?: string;
+  modelPortfolioShortName?: string;
+  languageCode?: string;
+  juridicalCode?: string;
+  countryCode?: string;
+  valuationMethod?: string;
+  custodyCode?: string;
+  bookEntry?: string;
+  lastModifiedStartDate?: string;
+  lastModifiedEndDate?: string;
+  tags?: string[];
+}
+
+export interface GetPortfoliosByParametersQuery {
+  portfoliosByParameters: Portfolio[];
+}
+
 // Transaction types
 export interface TransactionSecurity {
   id: Long;

@@ -1,12 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
+import { usePortfoliosByParameters } from '../features/portfolios/hooks/use-portfolios-by-parameters';
 import { PortfoliosList } from '../features/portfolios/components/portfolios-list';
 import { PortfolioSummary } from '../features/portfolios/components/portfolio-summary';
 import { PortfoliosSkeleton } from '../features/portfolios/components/portfolios-skeleton';
+import { PortfoliosFilters } from '../features/portfolios/components/portfolios-filters';
+import {
+  PortfoliosActiveFilters,
+  EMPTY_PORTFOLIO_FILTERS,
+  portfolioFiltersToParameters,
+} from '../features/portfolios/components/portfolios-active-filters';
 import { EmptyState } from '../components/ui/empty-state';
 import { ErrorState } from '../components/ui/error-state';
+import type { PortfolioFiltersState } from '../features/portfolios/components/portfolios-active-filters';
+import type { PortfolioParametersInput } from '../api/generated';
 import {
   PORTFOLIOS_TITLE,
   PORTFOLIOS_EMPTY_MESSAGE,
@@ -16,32 +24,61 @@ import {
 export function PortfoliosPage() {
   const { contactId } = useParams<{ contactId: string }>();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: contact, isLoading, isError, refetch } = usePortfolios(contactId);
-  const portfolios = contact?.portfolios;
+  const [draftFilters, setDraftFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
+  const [userParameters, setUserParameters] = useState<PortfolioParametersInput | null>(null);
 
-  const filteredPortfolios = useMemo(() => {
-    if (!portfolios) return [];
-    if (!searchQuery.trim()) return portfolios;
-    const query = searchQuery.toLowerCase();
-    return portfolios.filter((p) => p.name?.toLowerCase().includes(query));
-  }, [portfolios, searchQuery]);
+  // Contact info + default portfolio IDs (used when no user filters are active)
+  const { data: contact } = usePortfolios(contactId);
+  const contactPortfolioIds = useMemo(
+    () => contact?.portfolios?.map((p) => String(p.id)) ?? [],
+    [contact]
+  );
 
-  // Auto-select if exactly one portfolio
-  useEffect(() => {
-    if (portfolios && portfolios.length === 1) {
-      navigate(`/contacts/${contactId}/portfolios/${portfolios[0].id}`, {
-        replace: true,
-      });
-    }
-  }, [portfolios, contactId, navigate]);
+  // Effective parameters: user filters when active, otherwise the contact's own portfolio IDs
+  const effectiveParameters = useMemo<PortfolioParametersInput | null>(() => {
+    if (userParameters !== null) return userParameters;
+    if (contactPortfolioIds.length > 0) return { ids: contactPortfolioIds };
+    return null;
+  }, [userParameters, contactPortfolioIds]);
+
+  const {
+    data: portfolios,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = usePortfoliosByParameters(effectiveParameters ?? {}, {
+    enabled: effectiveParameters !== null,
+  });
+
+  function handleApply() {
+    const params = portfolioFiltersToParameters(draftFilters);
+    setAppliedFilters(draftFilters);
+    setUserParameters(params);
+  }
+
+  function handleClearAll() {
+    setDraftFilters(EMPTY_PORTFOLIO_FILTERS);
+    setAppliedFilters(EMPTY_PORTFOLIO_FILTERS);
+    setUserParameters(null);
+  }
+
+  function handleRemoveFilter(field: keyof PortfolioFiltersState) {
+    const updated = { ...appliedFilters, [field]: '' };
+    setDraftFilters(updated);
+    setAppliedFilters(updated);
+    const params = portfolioFiltersToParameters(updated);
+    setUserParameters(Object.keys(params).length > 0 ? params : null);
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
+        {/* Contact summary */}
         {contactId && (
-          <div className="mt-6 mb-8">
+          <div className="mb-6">
             <PortfolioSummary
               contactName={contact?.name}
               contactId={contactId}
@@ -50,41 +87,50 @@ export function PortfoliosPage() {
           </div>
         )}
 
-        <div className="mb-6">
+        <div className="mb-4">
           <h2 className="text-xl font-semibold text-slate-900">{PORTFOLIOS_TITLE}</h2>
           <p className="mt-1 text-sm text-slate-500">
             Select a portfolio to view its transaction history
           </p>
         </div>
 
-        <div className="mb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by portfolio name..."
-              className="h-9 w-full rounded-md border border-slate-200 bg-white py-1 pl-9 pr-3 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+        {/* Body: sidebar + content */}
+        <div className="flex gap-6">
+          <div className="w-72 flex-shrink-0">
+            <PortfoliosFilters
+              filters={draftFilters}
+              onChange={setDraftFilters}
+              onApply={handleApply}
+              onClear={handleClearAll}
             />
           </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="mb-4">
+              <PortfoliosActiveFilters
+                appliedFilters={appliedFilters}
+                onRemove={handleRemoveFilter}
+                onClearAll={handleClearAll}
+              />
+            </div>
+
+            {!isLoading && !isFetching && portfolios && (
+              <p className="mb-4 text-sm text-slate-500">
+                {portfolios.length} portfolio{portfolios.length !== 1 ? 's' : ''} found
+              </p>
+            )}
+
+            {isLoading || isFetching ? (
+              <PortfoliosSkeleton />
+            ) : isError ? (
+              <ErrorState message={PORTFOLIOS_ERROR_MESSAGE} onRetry={refetch} />
+            ) : portfolios && portfolios.length === 0 ? (
+              <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
+            ) : portfolios ? (
+              <PortfoliosList portfolios={portfolios} />
+            ) : null}
+          </div>
         </div>
-
-        {!isLoading && portfolios && (
-          <p className="mb-4 text-sm text-slate-500">
-            Showing {filteredPortfolios.length} of {portfolios.length} portfolios
-          </p>
-        )}
-
-        {isLoading ? (
-          <PortfoliosSkeleton />
-        ) : isError ? (
-          <ErrorState message={PORTFOLIOS_ERROR_MESSAGE} onRetry={refetch} />
-        ) : filteredPortfolios.length === 0 ? (
-          <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
-        ) : (
-          <PortfoliosList portfolios={filteredPortfolios} />
-        )}
       </div>
     </div>
   );
