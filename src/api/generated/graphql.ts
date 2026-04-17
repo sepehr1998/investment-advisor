@@ -5,9 +5,14 @@
 export type Long = number;
 
 // Contact types
+export interface ContactAddress {
+  email: string | null;
+}
+
 export interface Contact {
   id: Long;
   name: string | null;
+  address: ContactAddress | null;
 }
 
 export interface GetActiveContactsQuery {

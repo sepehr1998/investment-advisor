@@ -4,9 +4,9 @@ import type { Contact, Portfolio, Transaction } from '../api/generated';
 const GRAPHQL_URL = 'https://tryme.fasolutions.com/api/graphql';
 
 export const mockContacts: Contact[] = [
-  { id: 1, name: 'Alice Johnson' },
-  { id: 2, name: 'Bob Smith' },
-  { id: 3, name: 'Charlie Brown' },
+  { id: 1, name: 'Alice Johnson', address: { email: 'alice.johnson@example.com' } },
+  { id: 2, name: 'Bob Smith', address: { email: 'bob.smith@example.com' } },
+  { id: 3, name: 'Charlie Brown', address: { email: null } },
 ];
 
 export const mockPortfolios: Portfolio[] = [

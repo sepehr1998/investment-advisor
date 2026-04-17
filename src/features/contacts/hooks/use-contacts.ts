@@ -50,6 +50,9 @@ function buildContactsQuery(params: ContactParametersInput): string {
       contactsByParameters(${parametersArg}) {
         id
         name
+        address {
+          email
+        }
       }
     }
   `;

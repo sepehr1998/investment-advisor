@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { CONTACTS_TITLE } from '../../lib/constants';
-import type { Portfolio } from '../../api/generated';
+import type { Contact, Portfolio } from '../../api/generated';
 
 export function Breadcrumb() {
   const { contactId, portfolioId } = useParams<{
@@ -10,13 +10,20 @@ export function Breadcrumb() {
   }>();
   const queryClient = useQueryClient();
 
-  // Contact name comes from the portfolios cache (contact query includes name)
+  // Contact name: first try the portfolios cache, then fall back to any contacts list cache
   const contactData = queryClient.getQueryData<{
     id: number;
     name: string | null;
     portfolios: Portfolio[];
   }>(['portfolios', contactId]);
-  const contactName = contactData?.name ?? `Contact ${contactId}`;
+
+  const contactNameFromList = contactData?.name ??
+    queryClient
+      .getQueriesData<Contact[]>({ queryKey: ['contacts'] })
+      .flatMap(([, data]) => data ?? [])
+      .find((c) => String(c.id) === contactId)?.name;
+
+  const contactName = contactNameFromList ?? `Contact ${contactId}`;
 
   // Portfolio name from the nested portfolios array in that same cache entry
   const portfolio = contactData?.portfolios?.find((p) => String(p.id) === portfolioId);

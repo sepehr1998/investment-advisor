@@ -1,4 +1,5 @@
-import { useMemo, memo } from 'react';
+import { useMemo, memo, useState } from 'react';
+import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import type { Transaction } from '../../../api/generated';
 import { TransactionRow } from './transaction-row';
 import { Pagination } from '../../../components/ui/pagination';
@@ -9,31 +10,78 @@ interface TransactionsTableProps {
   onPageChange: (page: number) => void;
 }
 
-const HEADERS: { label: string; align: 'left' | 'right' }[] = [
-  { label: 'Date', align: 'left' },
-  { label: 'Type', align: 'left' },
-  { label: 'Security', align: 'left' },
-  { label: 'ISIN', align: 'left' },
-  { label: 'Price', align: 'right' },
-  { label: 'Currency', align: 'left' },
-  { label: 'Status', align: 'left' },
+type SortColumn = 'date' | 'type' | 'security' | 'isin' | 'price' | 'currency' | 'status';
+type SortDirection = 'asc' | 'desc';
+
+interface Column {
+  label: string;
+  key: SortColumn;
+  align: 'left' | 'right';
+}
+
+const COLUMNS: Column[] = [
+  { label: 'Date', key: 'date', align: 'left' },
+  { label: 'Type', key: 'type', align: 'left' },
+  { label: 'Security', key: 'security', align: 'left' },
+  { label: 'ISIN', key: 'isin', align: 'left' },
+  { label: 'Price', key: 'price', align: 'right' },
+  { label: 'Currency', key: 'currency', align: 'left' },
+  { label: 'Status', key: 'status', align: 'left' },
 ];
 
 const PAGE_SIZE = 20;
+
+function getValue(t: Transaction, col: SortColumn): string | number | null {
+  switch (col) {
+    case 'date': return t.transactionDate ?? null;
+    case 'type': return t.typeCode ?? null;
+    case 'security': return t.security?.name ?? t.security?.securityCode ?? null;
+    case 'isin': return t.security?.isinCode ?? null;
+    case 'price': return t.price ?? null;
+    case 'currency': return t.currency?.securityCode ?? null;
+    case 'status': return t.status ?? null;
+  }
+}
+
+function compareRows(a: Transaction, b: Transaction, col: SortColumn, dir: SortDirection): number {
+  const av = getValue(a, col);
+  const bv = getValue(b, col);
+
+  if (av === null && bv === null) return 0;
+  if (av === null) return 1;
+  if (bv === null) return -1;
+
+  let result: number;
+  if (typeof av === 'number' && typeof bv === 'number') {
+    result = av - bv;
+  } else {
+    result = String(av).localeCompare(String(bv));
+  }
+
+  return dir === 'asc' ? result : -result;
+}
 
 export const TransactionsTable = memo(function TransactionsTable({
   transactions,
   page,
   onPageChange,
 }: TransactionsTableProps) {
+  const [sortCol, setSortCol] = useState<SortColumn>('date');
+  const [sortDir, setSortDir] = useState<SortDirection>('desc');
+
+  function handleSort(col: SortColumn) {
+    if (col === sortCol) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortCol(col);
+      setSortDir('asc');
+    }
+    onPageChange(1);
+  }
+
   const sorted = useMemo(
-    () =>
-      [...transactions].sort((a, b) => {
-        if (!a.transactionDate) return 1;
-        if (!b.transactionDate) return -1;
-        return b.transactionDate.localeCompare(a.transactionDate);
-      }),
-    [transactions]
+    () => [...transactions].sort((a, b) => compareRows(a, b, sortCol, sortDir)),
+    [transactions, sortCol, sortDir]
   );
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
@@ -50,14 +98,29 @@ export const TransactionsTable = memo(function TransactionsTable({
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50">
-              {HEADERS.map(({ label, align }) => (
-                <th
-                  key={label}
-                  className={`px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 text-${align}`}
-                >
-                  {label}
-                </th>
-              ))}
+              {COLUMNS.map(({ label, key, align }) => {
+                const isActive = sortCol === key;
+                return (
+                  <th
+                    key={key}
+                    onClick={() => handleSort(key)}
+                    className={`cursor-pointer select-none px-4 py-3 text-xs font-semibold uppercase tracking-wide transition hover:bg-slate-100 text-${align} ${isActive ? 'text-blue-600' : 'text-slate-500'}`}
+                  >
+                    <span className={`inline-flex items-center gap-1 ${align === 'right' ? 'flex-row-reverse' : ''}`}>
+                      {label}
+                      {isActive ? (
+                        sortDir === 'asc' ? (
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        ) : (
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        )
+                      ) : (
+                        <ChevronsUpDown className="h-3.5 w-3.5 opacity-30" />
+                      )}
+                    </span>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
