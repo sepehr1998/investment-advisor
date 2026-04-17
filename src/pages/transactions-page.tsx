@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useTransactions } from '../features/transactions/hooks/use-transactions';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
 import { TransactionsSummary } from '../features/transactions/components/transactions-summary';
@@ -23,6 +24,7 @@ import {
 
 export function TransactionsPage() {
   const { contactId, portfolioId } = useParams<{ contactId: string; portfolioId: string }>();
+  const navigate = useNavigate();
 
   const [draftFilters, setDraftFilters] = useState<TransactionFiltersState>(EMPTY_TRANSACTION_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<TransactionFiltersState>(EMPTY_TRANSACTION_FILTERS);
@@ -55,6 +57,14 @@ export function TransactionsPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
+        <button
+          onClick={() => navigate(`/contacts/${contactId}`)}
+          className="mb-6 flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-slate-800"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Portfolios
+        </button>
+
         <div className="mb-8">
           <TransactionsSummary
             portfolioName={portfolio?.name}

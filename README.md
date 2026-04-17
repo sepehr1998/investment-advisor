@@ -13,7 +13,7 @@ A production-quality React + TypeScript web application that lets an authenticat
 ### Install and run
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/sepehr1998/investment-advisor.git
 cd investment-advisor
 npm install
 ```
@@ -21,7 +21,7 @@ npm install
 Copy the environment file and fill in your values:
 
 ```bash
-cp .env.example .env
+cp .env
 ```
 
 `.env` variables:

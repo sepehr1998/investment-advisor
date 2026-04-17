@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
 import { usePortfoliosByParameters } from '../features/portfolios/hooks/use-portfolios-by-parameters';
 import { PortfoliosList } from '../features/portfolios/components/portfolios-list';
@@ -23,6 +24,7 @@ import {
 
 export function PortfoliosPage() {
   const { contactId } = useParams<{ contactId: string }>();
+  const navigate = useNavigate();
 
   const [draftFilters, setDraftFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
@@ -75,6 +77,14 @@ export function PortfoliosPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
+        <button
+          onClick={() => navigate('/contacts')}
+          className="mb-6 flex items-center gap-1.5 text-sm text-slate-500 transition hover:text-slate-800"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Contacts
+        </button>
+
         {/* Contact summary */}
         {contactId && (
           <div className="mb-6">
