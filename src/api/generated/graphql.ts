@@ -14,6 +14,38 @@ export interface GetActiveContactsQuery {
   contacts: Contact[];
 }
 
+export interface ContactParametersInput {
+  name?: string;
+  contactId?: Long;
+  extId?: string;
+  status?: string;
+  address?: string;
+  nationalityCode?: string;
+  contactTypeCode?: string;
+  contactSubTypeCode?: string;
+  identityCode?: string;
+  classificationCode?: string;
+  classificationCode2?: string;
+  classificationCode3?: string;
+  postcode?: string;
+  languageCode?: string;
+  portfolioIds?: Long[];
+  juridicalCode?: string;
+  city?: string;
+  lastModifiedStartDate?: string;
+  lastModifiedEndDate?: string;
+  tags?: string[];
+  resultSize?: number;
+}
+
+export interface GetContactsByParametersQuery {
+  contactsByParameters: Contact[];
+}
+
+export interface GetContactsByParametersQueryVariables {
+  parameters?: ContactParametersInput;
+}
+
 // Portfolio types
 export interface PortfolioCurrency {
   securityCode: string | null;

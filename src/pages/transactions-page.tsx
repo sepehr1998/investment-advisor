@@ -8,7 +8,6 @@ import { TransactionsTable } from '../features/transactions/components/transacti
 import { TransactionsSkeleton } from '../features/transactions/components/transactions-skeleton';
 import { EmptyState } from '../components/ui/empty-state';
 import { ErrorState } from '../components/ui/error-state';
-import { Breadcrumb } from '../components/ui/breadcrumb';
 import {
   TRANSACTIONS_EMPTY_MESSAGE,
   TRANSACTIONS_ERROR_MESSAGE,
@@ -19,10 +18,9 @@ export function TransactionsPage() {
   const [activeFilter, setActiveFilter] = useState('ALL');
 
   const { data: transactions, isLoading, isError, refetch } = useTransactions(portfolioId);
-  console.log(transactions)
-  console.log(portfolioId)
   const { data: contact } = usePortfolios(contactId);
   const portfolio = contact?.portfolios?.find((p) => String(p.id) === portfolioId);
+
   const filteredTransactions =
     transactions?.filter(
       (t) => activeFilter === 'ALL' || t.typeCode === activeFilter
@@ -31,9 +29,7 @@ export function TransactionsPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumb />
-
-        <div className="mt-6 mb-8">
+        <div className="mb-8">
           <TransactionsSummary
             portfolioName={portfolio?.name}
             currency={portfolio?.currency?.securityCode}

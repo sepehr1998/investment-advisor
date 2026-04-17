@@ -1,5 +1,5 @@
-query GetActiveContacts {
-  contacts(status: "A") {
+query GetContactsByParameters($parameters: contactParametersInput) {
+  contactsByParameters(parameters: $parameters) {
     id
     name
   }

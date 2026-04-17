@@ -10,6 +10,7 @@ export const GET_ACTIVE_CONTACTS = gql`
   }
 `;
 
+
 export const GET_PORTFOLIOS_BY_CONTACT = gql`
   query GetPortfoliosByContact($contactId: Long!) {
     contact(id: $contactId) {

@@ -7,7 +7,6 @@ import { PortfolioSummary } from '../features/portfolios/components/portfolio-su
 import { PortfoliosSkeleton } from '../features/portfolios/components/portfolios-skeleton';
 import { EmptyState } from '../components/ui/empty-state';
 import { ErrorState } from '../components/ui/error-state';
-import { Breadcrumb } from '../components/ui/breadcrumb';
 import {
   PORTFOLIOS_TITLE,
   PORTFOLIOS_EMPTY_MESSAGE,
@@ -41,8 +40,6 @@ export function PortfoliosPage() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
-        <Breadcrumb />
-
         {contactId && (
           <div className="mt-6 mb-8">
             <PortfolioSummary
