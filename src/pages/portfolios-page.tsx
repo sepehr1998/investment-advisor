@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
 import { usePortfoliosByParameters } from '../features/portfolios/hooks/use-portfolios-by-parameters';
 import { PortfoliosList } from '../features/portfolios/components/portfolios-list';
@@ -23,7 +23,6 @@ import {
 
 export function PortfoliosPage() {
   const { contactId } = useParams<{ contactId: string }>();
-  const navigate = useNavigate();
 
   const [draftFilters, setDraftFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<PortfolioFiltersState>(EMPTY_PORTFOLIO_FILTERS);
