@@ -124,6 +124,23 @@ export interface GetTransactionsByPortfolioQuery {
   transactionsByParameters: Transaction[];
 }
 
+export interface TransactionParametersInput {
+  portfolioId?: number;
+  typeCode?: string;
+  startTrId?: number;
+  reference?: string;
+  currencyId?: string;
+  status?: string;
+  securityCode?: string;
+  transactionDateStart?: string;
+  transactionDateEnd?: string;
+  settlementStartDate?: string;
+  settlementEndDate?: string;
+  tags?: string[];
+  lastModifiedStartDate?: string;
+  lastModifiedEndDate?: string;
+}
+
 export interface GetTransactionsByPortfolioQueryVariables {
-  parameters: { portfolioId: number };
+  parameters: TransactionParametersInput;
 }

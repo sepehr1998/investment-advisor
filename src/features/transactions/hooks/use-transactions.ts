@@ -4,16 +4,22 @@ import {
   GET_TRANSACTIONS_BY_PORTFOLIO,
   type GetTransactionsByPortfolioQuery,
   type GetTransactionsByPortfolioQueryVariables,
+  type TransactionParametersInput,
 } from '../../../api/generated';
 
-export function useTransactions(portfolioId: string | null | undefined) {
+export function useTransactions(
+  portfolioId: string | null | undefined,
+  extraParams: Omit<TransactionParametersInput, 'portfolioId'> = {}
+) {
   return useQuery({
-    queryKey: ['transactions', portfolioId],
+    queryKey: ['transactions', portfolioId, extraParams],
     queryFn: async () => {
       const data = await client.request<
         GetTransactionsByPortfolioQuery,
         GetTransactionsByPortfolioQueryVariables
-      >(GET_TRANSACTIONS_BY_PORTFOLIO, { parameters: { portfolioId: Number(portfolioId) } });
+      >(GET_TRANSACTIONS_BY_PORTFOLIO, {
+        parameters: { portfolioId: Number(portfolioId), ...extraParams },
+      });
       return data.transactionsByParameters;
     },
     enabled: !!portfolioId,
