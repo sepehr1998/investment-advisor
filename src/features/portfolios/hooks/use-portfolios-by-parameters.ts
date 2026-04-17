@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
 import client from '../../../api/graphql-client';
 import type {
@@ -35,6 +35,7 @@ function buildPortfoliosQuery(params: PortfolioParametersInput): string {
     const tagList = params.tags.map((t) => `"${escapeString(t)}"`).join(', ');
     fields.push(`tags: [${tagList}]`);
   }
+  if (params.resultSize !== undefined) fields.push(`resultSize: ${params.resultSize}`);
 
   const parametersArg = fields.length > 0
     ? `parameters: { ${fields.join(', ')} }`
@@ -67,5 +68,6 @@ export function usePortfoliosByParameters(
       return data.portfoliosByParameters;
     },
     enabled: options.enabled ?? true,
+    placeholderData: keepPreviousData,
   });
 }

@@ -1,8 +1,25 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from '../components/layout/root-layout';
-import { ContactsPage } from '../pages/contacts-page';
-import { PortfoliosPage } from '../pages/portfolios-page';
-import { TransactionsPage } from '../pages/transactions-page';
+import { Spinner } from '../components/ui/spinner';
+
+const ContactsPage = lazy(() =>
+  import('../pages/contacts-page').then((m) => ({ default: m.ContactsPage }))
+);
+const PortfoliosPage = lazy(() =>
+  import('../pages/portfolios-page').then((m) => ({ default: m.PortfoliosPage }))
+);
+const TransactionsPage = lazy(() =>
+  import('../pages/transactions-page').then((m) => ({ default: m.TransactionsPage }))
+);
+
+function PageFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <Spinner />
+    </div>
+  );
+}
 
 export const router = createBrowserRouter([
   {
@@ -15,15 +32,27 @@ export const router = createBrowserRouter([
       },
       {
         path: 'contacts',
-        element: <ContactsPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <ContactsPage />
+          </Suspense>
+        ),
       },
       {
         path: 'contacts/:contactId',
-        element: <PortfoliosPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <PortfoliosPage />
+          </Suspense>
+        ),
       },
       {
         path: 'contacts/:contactId/portfolios/:portfolioId',
-        element: <TransactionsPage />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <TransactionsPage />
+          </Suspense>
+        ),
       },
     ],
   },

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { RotateCcw, Search } from 'lucide-react';
 import type { TransactionFiltersState } from './transactions-active-filters';
 
@@ -25,7 +26,7 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-export function TransactionsFiltersSidebar({
+export const TransactionsFiltersSidebar = memo(function TransactionsFiltersSidebar({
   filters,
   onChange,
   onApply,
@@ -199,4 +200,4 @@ export function TransactionsFiltersSidebar({
       </div>
     </aside>
   );
-}
+});

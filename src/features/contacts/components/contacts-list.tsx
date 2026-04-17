@@ -1,23 +1,31 @@
-import { useState } from 'react';
+import { useMemo, memo } from 'react';
 import type { Contact } from '../types';
 import { ContactCard } from './contact-card';
 import { Pagination } from '../../../components/ui/pagination';
 
 interface ContactsListProps {
   contacts: Contact[];
+  page: number;
+  onPageChange: (page: number) => void;
 }
 
 const PAGE_SIZE = 12;
 
-export function ContactsList({ contacts }: ContactsListProps) {
-  const [page, setPage] = useState(1);
+export const ContactsList = memo(function ContactsList({
+  contacts,
+  page,
+  onPageChange,
+}: ContactsListProps) {
+  const sorted = useMemo(
+    () => [...contacts].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')),
+    [contacts]
+  );
 
-  const sorted = [...contacts].sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const pageItems = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function handlePageChange(p: number) {
-    setPage(p);
+    onPageChange(p);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -31,4 +39,4 @@ export function ContactsList({ contacts }: ContactsListProps) {
       <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
-}
+});

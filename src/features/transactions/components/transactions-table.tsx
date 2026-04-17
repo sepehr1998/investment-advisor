@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useMemo, memo } from 'react';
 import type { Transaction } from '../../../api/generated';
 import { TransactionRow } from './transaction-row';
 import { Pagination } from '../../../components/ui/pagination';
 
 interface TransactionsTableProps {
   transactions: Transaction[];
+  page: number;
+  onPageChange: (page: number) => void;
 }
 
 const HEADERS: { label: string; align: 'left' | 'right' }[] = [
@@ -19,20 +21,26 @@ const HEADERS: { label: string; align: 'left' | 'right' }[] = [
 
 const PAGE_SIZE = 20;
 
-export function TransactionsTable({ transactions }: TransactionsTableProps) {
-  const [page, setPage] = useState(1);
-
-  const sorted = [...transactions].sort((a, b) => {
-    if (!a.transactionDate) return 1;
-    if (!b.transactionDate) return -1;
-    return b.transactionDate.localeCompare(a.transactionDate);
-  });
+export const TransactionsTable = memo(function TransactionsTable({
+  transactions,
+  page,
+  onPageChange,
+}: TransactionsTableProps) {
+  const sorted = useMemo(
+    () =>
+      [...transactions].sort((a, b) => {
+        if (!a.transactionDate) return 1;
+        if (!b.transactionDate) return -1;
+        return b.transactionDate.localeCompare(a.transactionDate);
+      }),
+    [transactions]
+  );
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const pageItems = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function handlePageChange(p: number) {
-    setPage(p);
+    onPageChange(p);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -62,4 +70,4 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
       <Pagination page={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
-}
+});

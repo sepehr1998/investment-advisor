@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useContacts } from '../features/contacts/hooks/use-contacts';
 import { ContactsList } from '../features/contacts/components/contacts-list';
 import { ContactsSkeleton } from '../features/contacts/components/contacts-skeleton';
@@ -15,44 +15,43 @@ import {
 } from '../lib/constants';
 
 export function ContactsPage() {
-  // Draft state: what's currently typed in the sidebar inputs
   const [draftFilters, setDraftFilters] = useState<ContactFiltersState>(EMPTY_FILTERS);
-  // Applied state: what was last submitted (drives the query)
   const [appliedFilters, setAppliedFilters] = useState<ContactFiltersState>(EMPTY_FILTERS);
   const [parameters, setParameters] = useState<ContactParametersInput>({});
+  const [page, setPage] = useState(1);
 
   const { data: contacts, isLoading, isFetching, isError, refetch } = useContacts(parameters);
 
-  function handleApply() {
+  const handleApply = useCallback(() => {
     setAppliedFilters(draftFilters);
     setParameters(filtersToParameters(draftFilters));
-  }
+    setPage(1);
+  }, [draftFilters]);
 
-  function handleClearAll() {
+  const handleClearAll = useCallback(() => {
     setDraftFilters(EMPTY_FILTERS);
     setAppliedFilters(EMPTY_FILTERS);
     setParameters({});
-  }
+    setPage(1);
+  }, []);
 
-  function handleRemoveFilter(field: keyof ContactFiltersState) {
+  const handleRemoveFilter = useCallback((field: keyof ContactFiltersState) => {
     const updated = { ...appliedFilters, [field]: '' };
     setDraftFilters(updated);
     setAppliedFilters(updated);
     setParameters(filtersToParameters(updated));
-  }
+    setPage(1);
+  }, [appliedFilters]);
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-slate-900">{CONTACTS_TITLE}</h1>
           <p className="mt-1 text-sm text-slate-500">Select a contact to view their portfolios</p>
         </div>
 
-        {/* Body: sidebar + content */}
         <div className="flex gap-6">
-          {/* Always-visible filters sidebar */}
           <div className="w-72 flex-shrink-0">
             <ContactsFilters
               filters={draftFilters}
@@ -62,9 +61,7 @@ export function ContactsPage() {
             />
           </div>
 
-          {/* Main content */}
           <div className="min-w-0 flex-1">
-            {/* Active filter chips */}
             <div className="mb-4">
               <ContactsActiveFilters
                 appliedFilters={appliedFilters}
@@ -73,7 +70,6 @@ export function ContactsPage() {
               />
             </div>
 
-            {/* Result count */}
             {!isLoading && !isFetching && contacts && (
               <p className="mb-4 text-sm text-slate-500">
                 {contacts.length} contact{contacts.length !== 1 ? 's' : ''} found
@@ -87,7 +83,7 @@ export function ContactsPage() {
             ) : contacts && contacts.length === 0 ? (
               <EmptyState message={CONTACTS_EMPTY_MESSAGE} />
             ) : contacts ? (
-              <ContactsList contacts={contacts} />
+              <ContactsList contacts={contacts} page={page} onPageChange={setPage} />
             ) : null}
           </div>
         </div>

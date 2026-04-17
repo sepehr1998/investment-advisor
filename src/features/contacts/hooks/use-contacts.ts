@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
 import client from '../../../api/graphql-client';
 import type {
@@ -56,12 +56,14 @@ function buildContactsQuery(params: ContactParametersInput): string {
 }
 
 export function useContacts(parameters: ContactParametersInput = {}) {
+  const mergedParameters = { resultSize: 500, ...parameters };
   return useQuery({
-    queryKey: ['contacts', parameters],
+    queryKey: ['contacts', mergedParameters],
     queryFn: async () => {
-      const query = buildContactsQuery(parameters);
+      const query = buildContactsQuery(mergedParameters);
       const data = await client.request<GetContactsByParametersQuery>(query);
       return data.contactsByParameters;
     },
+    placeholderData: keepPreviousData,
   });
 }

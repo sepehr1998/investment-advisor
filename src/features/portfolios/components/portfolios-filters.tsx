@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { RotateCcw, Search } from 'lucide-react';
 import type { PortfolioFiltersState } from './portfolios-active-filters';
 
@@ -25,7 +26,7 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-export function PortfoliosFilters({ filters, onChange, onApply, onClear }: PortfoliosFiltersProps) {
+export const PortfoliosFilters = memo(function PortfoliosFilters({ filters, onChange, onApply, onClear }: PortfoliosFiltersProps) {
   function set(field: keyof PortfolioFiltersState, value: string) {
     onChange({ ...filters, [field]: value });
   }
@@ -236,4 +237,4 @@ export function PortfoliosFilters({ filters, onChange, onApply, onClear }: Portf
       </div>
     </aside>
   );
-}
+});

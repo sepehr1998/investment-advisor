@@ -89,6 +89,7 @@ export interface PortfolioParametersInput {
   lastModifiedStartDate?: string;
   lastModifiedEndDate?: string;
   tags?: string[];
+  resultSize?: number;
 }
 
 export interface GetPortfoliosByParametersQuery {

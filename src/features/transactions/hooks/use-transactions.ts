@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import client from '../../../api/graphql-client';
 import {
   GET_TRANSACTIONS_BY_PORTFOLIO,
@@ -11,6 +11,7 @@ export function useTransactions(
   portfolioId: string | null | undefined,
   extraParams: Omit<TransactionParametersInput, 'portfolioId'> = {}
 ) {
+  const parameters = { resultSize: 500, ...extraParams, portfolioId: Number(portfolioId) };
   return useQuery({
     queryKey: ['transactions', portfolioId, extraParams],
     queryFn: async () => {
@@ -18,10 +19,11 @@ export function useTransactions(
         GetTransactionsByPortfolioQuery,
         GetTransactionsByPortfolioQueryVariables
       >(GET_TRANSACTIONS_BY_PORTFOLIO, {
-        parameters: { portfolioId: Number(portfolioId), ...extraParams },
+        parameters,
       });
       return data.transactionsByParameters;
     },
     enabled: !!portfolioId,
+    placeholderData: keepPreviousData,
   });
 }

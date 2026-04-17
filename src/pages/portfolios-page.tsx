@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
 import { usePortfoliosByParameters } from '../features/portfolios/hooks/use-portfolios-by-parameters';
@@ -53,25 +53,25 @@ export function PortfoliosPage() {
     enabled: effectiveParameters !== null,
   });
 
-  function handleApply() {
+  const handleApply = useCallback(() => {
     const params = portfolioFiltersToParameters(draftFilters);
     setAppliedFilters(draftFilters);
     setUserParameters(params);
-  }
+  }, [draftFilters]);
 
-  function handleClearAll() {
+  const handleClearAll = useCallback(() => {
     setDraftFilters(EMPTY_PORTFOLIO_FILTERS);
     setAppliedFilters(EMPTY_PORTFOLIO_FILTERS);
     setUserParameters(null);
-  }
+  }, []);
 
-  function handleRemoveFilter(field: keyof PortfolioFiltersState) {
+  const handleRemoveFilter = useCallback((field: keyof PortfolioFiltersState) => {
     const updated = { ...appliedFilters, [field]: '' };
     setDraftFilters(updated);
     setAppliedFilters(updated);
     const params = portfolioFiltersToParameters(updated);
     setUserParameters(Object.keys(params).length > 0 ? params : null);
-  }
+  }, [appliedFilters]);
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -124,6 +124,8 @@ export function PortfoliosPage() {
               <PortfoliosSkeleton />
             ) : isError ? (
               <ErrorState message={PORTFOLIOS_ERROR_MESSAGE} onRetry={refetch} />
+            ) : effectiveParameters === null ? (
+              <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
             ) : portfolios && portfolios.length === 0 ? (
               <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
             ) : portfolios ? (

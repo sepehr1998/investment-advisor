@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTransactions } from '../features/transactions/hooks/use-transactions';
 import { usePortfolios } from '../features/portfolios/hooks/use-portfolios';
@@ -26,6 +26,7 @@ export function TransactionsPage() {
 
   const [draftFilters, setDraftFilters] = useState<TransactionFiltersState>(EMPTY_TRANSACTION_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<TransactionFiltersState>(EMPTY_TRANSACTION_FILTERS);
+  const [page, setPage] = useState(1);
 
   const extraParams = useMemo(() => transactionFiltersToParameters(appliedFilters), [appliedFilters]);
 
@@ -33,20 +34,23 @@ export function TransactionsPage() {
   const { data: contact } = usePortfolios(contactId);
   const portfolio = contact?.portfolios?.find((p) => String(p.id) === portfolioId);
 
-  function handleApply() {
+  const handleApply = useCallback(() => {
     setAppliedFilters(draftFilters);
-  }
+    setPage(1);
+  }, [draftFilters]);
 
-  function handleClearAll() {
+  const handleClearAll = useCallback(() => {
     setDraftFilters(EMPTY_TRANSACTION_FILTERS);
     setAppliedFilters(EMPTY_TRANSACTION_FILTERS);
-  }
+    setPage(1);
+  }, []);
 
-  function handleRemoveFilter(field: keyof TransactionFiltersState) {
+  const handleRemoveFilter = useCallback((field: keyof TransactionFiltersState) => {
     const updated = { ...appliedFilters, [field]: '' };
     setAppliedFilters(updated);
     setDraftFilters(updated);
-  }
+    setPage(1);
+  }, [appliedFilters]);
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -85,7 +89,7 @@ export function TransactionsPage() {
             ) : !transactions || transactions.length === 0 ? (
               <EmptyState message={TRANSACTIONS_EMPTY_MESSAGE} />
             ) : (
-              <TransactionsTable transactions={transactions} />
+              <TransactionsTable transactions={transactions} page={page} onPageChange={setPage} />
             )}
           </div>
         </div>

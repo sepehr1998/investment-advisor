@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { RotateCcw, Search } from 'lucide-react';
 import type { ContactFiltersState } from './contacts-active-filters';
 
@@ -27,7 +28,7 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-export function ContactsFilters({ filters, onChange, onApply, onClear }: ContactsFiltersProps) {
+export const ContactsFilters = memo(function ContactsFilters({ filters, onChange, onApply, onClear }: ContactsFiltersProps) {
   function set(field: keyof ContactFiltersState, value: string) {
     onChange({ ...filters, [field]: value });
   }
@@ -259,4 +260,4 @@ export function ContactsFilters({ filters, onChange, onApply, onClear }: Contact
       </div>
     </aside>
   );
-}
+});
