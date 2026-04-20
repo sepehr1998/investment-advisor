@@ -83,12 +83,12 @@ export const TransactionsFiltersSidebar = memo(function TransactionsFiltersSideb
           />
         </FilterField>
 
-        <FilterField label="Currency">
+        <FilterField label="Currency ID">
           <input
-            type="text"
+            type="number"
             value={filters.currencyId}
             onChange={(e) => set('currencyId', e.target.value)}
-            placeholder="e.g. EUR, USD"
+            placeholder="Numeric currency ID"
             className={inputClass}
           />
         </FilterField>

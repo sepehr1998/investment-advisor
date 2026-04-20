@@ -57,7 +57,8 @@ export function transactionFiltersToParameters(
   if (filters.typeCode) params.typeCode = filters.typeCode;
   if (filters.startTrId.trim()) params.startTrId = Number(filters.startTrId.trim());
   if (filters.reference.trim()) params.reference = filters.reference.trim();
-  if (filters.currencyId.trim()) params.currencyId = filters.currencyId.trim();
+  const currencyId = Number(filters.currencyId.trim());
+  if (filters.currencyId.trim() && !isNaN(currencyId)) params.currencyId = currencyId;
   if (filters.status) params.status = filters.status;
   if (filters.securityCode.trim()) params.securityCode = filters.securityCode.trim();
   if (filters.transactionDateStart) params.transactionDateStart = filters.transactionDateStart;

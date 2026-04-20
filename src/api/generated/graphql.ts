@@ -136,7 +136,7 @@ export interface TransactionParametersInput {
   typeCode?: string;
   startTrId?: number;
   reference?: string;
-  currencyId?: string;
+  currencyId?: number;
   status?: string;
   securityCode?: string;
   transactionDateStart?: string;
@@ -146,6 +146,7 @@ export interface TransactionParametersInput {
   tags?: string[];
   lastModifiedStartDate?: string;
   lastModifiedEndDate?: string;
+  resultSize?: number;
 }
 
 export interface GetTransactionsByPortfolioQueryVariables {
