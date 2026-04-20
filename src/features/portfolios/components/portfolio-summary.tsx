@@ -25,9 +25,6 @@ export function PortfolioSummary({
             <p className="text-sm text-slate-500">ID: {contactId}</p>
           </div>
         </div>
-        <span className="rounded-md border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
-          Active
-        </span>
       </div>
       <div className="border-t border-slate-100 px-6 py-4">
         <div>
