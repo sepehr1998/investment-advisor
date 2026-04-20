@@ -8,7 +8,6 @@ interface ContactCardProps {
 
 export function ContactCard({ contact }: ContactCardProps) {
   const navigate = useNavigate();
-  console.log(contact)
   return (
     <div
       onClick={() => navigate(`/contacts/${contact.id}`)}

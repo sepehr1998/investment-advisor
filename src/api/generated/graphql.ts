@@ -41,6 +41,7 @@ export interface ContactParametersInput {
   lastModifiedEndDate?: string;
   tags?: string[];
   resultSize?: number;
+  enableFilteringWithoutParameters?: boolean;
 }
 
 export interface GetContactsByParametersQuery {

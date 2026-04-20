@@ -13,3 +13,15 @@ query GetPortfoliosByContact($contactId: Long!) {
     }
   }
 }
+
+query GetPortfoliosByParameters($parameters: PortfolioParametersInput) {
+  portfoliosByParameters(parameters: $parameters) {
+    id
+    name
+    currency {
+      securityCode
+    }
+    status
+    startDate
+  }
+}

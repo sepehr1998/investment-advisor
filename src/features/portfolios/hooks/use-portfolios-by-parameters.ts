@@ -37,13 +37,9 @@ function buildPortfoliosQuery(params: PortfolioParametersInput): string {
   }
   if (params.resultSize !== undefined) fields.push(`resultSize: ${params.resultSize}`);
 
-  const parametersArg = fields.length > 0
-    ? `parameters: { ${fields.join(', ')} }`
-    : `parameters: {}`;
-
   return gql`
     query GetPortfoliosByParameters {
-      portfoliosByParameters(${parametersArg}) {
+      portfoliosByParameters(parameters: { ${fields.join(', ')} }) {
         id
         name
         currency {
@@ -60,10 +56,12 @@ export function usePortfoliosByParameters(
   parameters: PortfolioParametersInput = {},
   options: { enabled?: boolean } = {}
 ) {
+  const mergedParameters: PortfolioParametersInput = { resultSize: 500, ...parameters };
+
   return useQuery({
-    queryKey: ['portfolios-by-parameters', parameters],
+    queryKey: ['portfolios-by-parameters', mergedParameters],
     queryFn: async () => {
-      const query = buildPortfoliosQuery(parameters);
+      const query = buildPortfoliosQuery(mergedParameters);
       const data = await client.request<GetPortfoliosByParametersQuery>(query);
       return data.portfoliosByParameters;
     },

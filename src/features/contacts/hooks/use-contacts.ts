@@ -40,14 +40,14 @@ function buildContactsQuery(params: ContactParametersInput): string {
   }
   if (params.resultSize !== undefined) fields.push(`resultSize: ${params.resultSize}`);
 
-  // When no filters provided, use the flag that permits unfiltered queries
-  if (fields.length === 0) fields.push('enableFilteringWithoutParameters: true');
-
-  const parametersArg = `parameters: { ${fields.join(', ')} }`;
+  // The server requires this flag when no filter parameters are provided
+  if (fields.length === 0 || (fields.length === 1 && fields[0]?.startsWith('resultSize'))) {
+    fields.push('enableFilteringWithoutParameters: true');
+  }
 
   return gql`
     query GetContactsByParameters {
-      contactsByParameters(${parametersArg}) {
+      contactsByParameters(parameters: { ${fields.join(', ')} }) {
         id
         name
         address {

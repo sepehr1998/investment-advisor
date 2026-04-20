@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { CONTACTS_TITLE } from '../../lib/constants';
 import type { Contact, Portfolio } from '../../api/generated';
+import { ChevronRight } from "lucide-react";
 
 export function Breadcrumb() {
   const { contactId, portfolioId } = useParams<{
@@ -41,7 +42,7 @@ export function Breadcrumb() {
           >
             {CONTACTS_TITLE}
           </Link>
-          <ChevronIcon />
+          <ChevronRight />
           {!portfolioId ? (
             <span className="font-medium text-gray-900">{contactName}</span>
           ) : (
@@ -52,26 +53,12 @@ export function Breadcrumb() {
               >
                 {contactName}
               </Link>
-              <ChevronIcon />
+              <ChevronRight />
               <span className="font-medium text-gray-900">{portfolioName}</span>
             </>
           )}
         </>
       )}
     </nav>
-  );
-}
-
-function ChevronIcon() {
-  return (
-    <svg
-      className="h-4 w-4 flex-shrink-0 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
   );
 }

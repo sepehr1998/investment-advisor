@@ -1,2 +1,0 @@
-// Badge component
-export {};
