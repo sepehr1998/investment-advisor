@@ -31,28 +31,31 @@ export function PortfoliosPage() {
   const [userParameters, setUserParameters] = useState<PortfolioParametersInput | null>(null);
 
   // Contact info + default portfolio IDs (used when no user filters are active)
-  const { data: contact } = usePortfolios(contactId);
+  const { data: contact, isLoading: isContactLoading } = usePortfolios(contactId);
   const contactPortfolioIds = useMemo(
     () => contact?.portfolios?.map((p) => String(p.id)) ?? [],
     [contact]
   );
 
-  // Always scope results to this contact's portfolios by including their IDs,
-  // then layer any additional user filters on top.
-  const effectiveParameters = useMemo<PortfolioParametersInput | null>(() => {
-    if (contactPortfolioIds.length === 0) return null;
+  const hasUserFilters = userParameters !== null;
+
+  // When filters are active: ask the server to filter within the contact's portfolio IDs.
+  // When no filters: use the portfolios already returned by the contact query — no second request.
+  const filteredParameters = useMemo<PortfolioParametersInput>(() => {
     return { ...userParameters, ids: contactPortfolioIds };
   }, [userParameters, contactPortfolioIds]);
 
   const {
-    data: portfolios,
-    isLoading,
+    data: filteredPortfolios,
+    isLoading: isFiltering,
     isFetching,
     isError,
     refetch,
-  } = usePortfoliosByParameters(effectiveParameters ?? {}, {
-    enabled: effectiveParameters !== null,
+  } = usePortfoliosByParameters(filteredParameters, {
+    enabled: hasUserFilters && contactPortfolioIds.length > 0,
   });
+
+  const portfolios = (hasUserFilters ? filteredPortfolios : contact?.portfolios) ?? [];
 
   const handleApply = useCallback(() => {
     const params = portfolioFiltersToParameters(draftFilters);
@@ -123,23 +126,21 @@ export function PortfoliosPage() {
               />
             </div>
 
-            {!isLoading && !isFetching && portfolios && (
+            {!isContactLoading && !isFetching && portfolios.length > 0 && (
               <p className="mb-4 text-sm text-slate-500">
                 {portfolios.length} portfolio{portfolios.length !== 1 ? 's' : ''} found
               </p>
             )}
 
-            {isLoading || isFetching ? (
+            {isContactLoading || (hasUserFilters && isFiltering) || isFetching ? (
               <PortfoliosSkeleton />
             ) : isError ? (
               <ErrorState message={PORTFOLIOS_ERROR_MESSAGE} onRetry={refetch} />
-            ) : effectiveParameters === null ? (
+            ) : portfolios.length === 0 ? (
               <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
-            ) : portfolios && portfolios.length === 0 ? (
-              <EmptyState message={PORTFOLIOS_EMPTY_MESSAGE} />
-            ) : portfolios ? (
+            ) : (
               <PortfoliosList portfolios={portfolios} />
-            ) : null}
+            )}
           </div>
         </div>
       </div>
