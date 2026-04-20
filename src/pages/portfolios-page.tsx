@@ -42,7 +42,13 @@ export function PortfoliosPage() {
   // When filters are active: ask the server to filter within the contact's portfolio IDs.
   // When no filters: use the portfolios already returned by the contact query — no second request.
   const filteredParameters = useMemo<PortfolioParametersInput>(() => {
-    return { ...userParameters, ids: contactPortfolioIds };
+    // If the user filtered by specific IDs, intersect with the contact's IDs to stay contact-scoped.
+    // Otherwise, use all of the contact's portfolio IDs as the constraint.
+    const userIds = userParameters?.ids;
+    const ids = userIds?.length
+      ? userIds.filter((id) => contactPortfolioIds.includes(id))
+      : contactPortfolioIds;
+    return { ...userParameters, ids };
   }, [userParameters, contactPortfolioIds]);
 
   const {
