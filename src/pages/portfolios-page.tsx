@@ -37,11 +37,11 @@ export function PortfoliosPage() {
     [contact]
   );
 
-  // Effective parameters: user filters when active, otherwise the contact's own portfolio IDs
+  // Always scope results to this contact's portfolios by including their IDs,
+  // then layer any additional user filters on top.
   const effectiveParameters = useMemo<PortfolioParametersInput | null>(() => {
-    if (userParameters !== null) return userParameters;
-    if (contactPortfolioIds.length > 0) return { ids: contactPortfolioIds };
-    return null;
+    if (contactPortfolioIds.length === 0) return null;
+    return { ...userParameters, ids: contactPortfolioIds };
   }, [userParameters, contactPortfolioIds]);
 
   const {
