@@ -1,4 +1,4 @@
-import {lazy, Suspense} from 'react';
+import {Suspense} from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from '../components/layout/root-layout';
 import { Spinner } from '../components/ui/spinner';
