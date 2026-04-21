@@ -18,21 +18,6 @@ cd investment-advisor
 npm install
 ```
 
-Copy the environment file and fill in your values:
-
-```bash
-cp .env
-```
-
-`.env` variables:
-
-```
-VITE_KEYCLOAK_URL=https://tryme.fasolutions.com/auth
-VITE_KEYCLOAK_REALM=fa
-VITE_KEYCLOAK_CLIENT_ID=external-api
-VITE_GRAPHQL_URL=https://tryme.fasolutions.com/api/graphql
-```
-
 Start the development server:
 
 ```bash
